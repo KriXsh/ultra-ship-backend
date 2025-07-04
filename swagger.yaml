@@ -1,0 +1,234 @@
+openapi: 3.0.0
+info:
+  title: Employee Management API
+  description: API for managing employee data and authentication.
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:5001'
+paths:
+  /api/auth/signup:
+    post:
+      summary: Sign up a new user
+      description: Endpoint for creating a new user (Admin).
+      operationId: signUp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "adminUser3"
+                password:
+                  type: string
+                  example: "adminPassword123"
+      responses:
+        '200':
+          description: Successful signup
+        '400':
+          description: Invalid input
+
+  /api/auth/login:
+    post:
+      summary: Login an existing user
+      description: Endpoint for logging in an existing user (Admin).
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "adminUser3"
+                password:
+                  type: string
+                  example: "adminPassword123"
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NjcwNTVjYjVjNDdhM2I2YjVlNTU4NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc1MTYyODM5OCwiZXhwIjoxNzUxNjMxOTk4fQ"
+        '400':
+          description: Invalid username or password
+
+  /api/employees:
+    get:
+      summary: Get all employees
+      description: Get a paginated list of employees, filtered by name, sorted by a field, and paginated.
+      operationId: getEmployees
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            example: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            example: 10
+        - in: query
+          name: name
+          schema:
+            type: string
+            example: "John"
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            example: "name"
+        - in: query
+          name: sortOrder
+          schema:
+            type: string
+            enum: [asc, desc]
+            example: "asc"
+      responses:
+        '200':
+          description: A list of employees
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: "John Doe"
+                    age:
+                      type: integer
+                      example: 30
+                    class:
+                      type: string
+                      example: "Math"
+                    subjects:
+                      type: array
+                      items:
+                        type: string
+                      example: ["Math", "Physics"]
+                    attendance:
+                      type: number
+                      example: 90
+        '400':
+          description: Invalid query parameters
+
+  /api/employees/create:
+    post:
+      summary: Create a new employee
+      description: Endpoint for creating a new employee.
+      operationId: createEmployee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                age:
+                  type: integer
+                  example: 30
+                class:
+                  type: string
+                  example: "Math"
+                subjects:
+                  type: array
+                  items:
+                    type: string
+                  example: ["Math", "Physics"]
+                attendance:
+                  type: number
+                  example: 90
+      responses:
+        '201':
+          description: Employee created successfully
+        '400':
+          description: Invalid input
+
+  /api/employees/{id}:
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+          example: "6867bb142183ead11b9a9952"
+    get:
+      summary: Get a specific employee by ID
+      description: Endpoint for retrieving a single employee by their ID.
+      operationId: getEmployeeById
+      responses:
+        '200':
+          description: The requested employee
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "John Doe"
+                  age:
+                    type: integer
+                    example: 30
+                  class:
+                    type: string
+                    example: "Math"
+                  subjects:
+                    type: array
+                    items:
+                      type: string
+                    example: ["Math", "Physics"]
+                  attendance:
+                    type: number
+                    example: 90
+        '404':
+          description: Employee not found
+
+    put:
+      summary: Update an existing employee
+      description: Endpoint for updating an existing employee by their ID.
+      operationId: updateEmployee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "Krish Doe"
+                age:
+                  type: integer
+                  example: 35
+                class:
+                  type: string
+                  example: "Senior Developer 3"
+                subjects:
+                  type: array
+                  items:
+                    type: string
+                  example: ["JavaScript", "Node.js", "React", "GraphQL"]
+                attendance:
+                  type: string
+                  example: "90%"
+      responses:
+        '200':
+          description: Employee updated successfully
+        '404':
+          description: Employee not found

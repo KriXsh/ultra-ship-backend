@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./backend 
+    container_name: backend-ultraShip
+    ports:
+      - "5001:5001"
+  volumes:
+    - ./backend:/app
+  environment:
+    - NODE_ENV=development
+  networks:
+    - app-network
+
+  frontend:
+    build:
+      context: ./frontend 
+    container_name: frontend-ultraShip
+    ports:
+      - "3001:3001"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
